@@ -1,0 +1,12 @@
+body {
+  background-image: url('/bg.webp');
+}
+
+.main {
+  background-color: rgba(122, 122, 122, 0.384);
+
+}
+
+.c-pointer {
+  cursor: pointer;
+}
