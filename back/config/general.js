@@ -3,7 +3,7 @@
  */
 
 // Port
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = Number(process.env.PORT) ?? 3000;
 
 // Body parser mb data limit
 const BPMBLIMIT = process.env.BPMBLIMIT;
@@ -40,7 +40,7 @@ const DBLOGC = (process.env.DBLOGC == 'true' ? true : false);
 
 
 // Salt Level for user password encryption
-const SALTLVL = Number(process.env.SALTLVL) || 10;
+const SALTLVL = Number(process.env.SALTLVL) ?? 10;
 
 
 const config = {

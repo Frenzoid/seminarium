@@ -77,10 +77,10 @@ try {
         issueRelations();
 
         // issue transaction, creating tables from models.
-        await createTablesFromModels();
+        await createTablesFromModels(false);
 
         //  Insert filler data.
-        await insertFillerData();
+        // await insertFillerData();
 
         // Start express server.
         app.listen(PORT, () => {

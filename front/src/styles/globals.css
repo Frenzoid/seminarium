@@ -3,10 +3,34 @@ body {
 }
 
 .main {
-  background-color: rgba(122, 122, 122, 0.384);
+  background-color: rgba(78, 78, 78, 0.767);
 
 }
 
 .c-pointer {
   cursor: pointer;
+}
+
+.zoom:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s;
+}
+
+.zoom {
+  transform: scale(1);
+  transition: transform 0.2s;
+}
+
+.bg-darkgrey {
+  background: rgba(36, 36, 36, 0.534);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }

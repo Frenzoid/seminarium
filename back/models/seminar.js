@@ -12,8 +12,8 @@ const Seminar = sequelize.define('seminar', {
         allowNull: false,
         primaryKey: true
     },
-    imagePath: {
-        type: Sequelize.STRING,
+    image: {
+        type: Sequelize.BLOB,
         allowNull: true
     },
     title: {
@@ -22,22 +22,30 @@ const Seminar = sequelize.define('seminar', {
     },
     description: {
         type: Sequelize.STRING,
-        allowNull: true
+        allowNull: false
     },
     speakers: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    txtcolor: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
+    bgrcolor: {
         type: Sequelize.STRING,
         allowNull: true
     },
     date: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: false,
         validate: {
             isDate: true
         }
     },
     place: {
         type: Sequelize.STRING,
-        allowNull: true
+        allowNull: false
     }
 });
 

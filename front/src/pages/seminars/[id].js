@@ -1,7 +1,12 @@
-import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
+
+import axios from 'axios';
+
 import Loading from '../../components/Loading';
+import Error from '../../components/Error';
+
+import getConfig from 'next/config'
 
 export default function SeminarDetails() {
   const [seminar, setSeminar] = useState(null);
@@ -11,18 +16,21 @@ export default function SeminarDetails() {
   const router = useRouter();
   const { id } = router.query;
 
+  const { publicRuntimeConfig } = getConfig()
+  const { APIURL } = publicRuntimeConfig
+
   async function fetchSeminarDetails() {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:3001/api/seminars/${id}`);
-      setSeminar(response.data);
+      const { data } = await axios.get(`${APIURL}/seminars/${id}`);
+      setSeminar(data);
     } catch (error) {
+      console.error(error);
       setError(`Error fetching seminar details: ${error.message}`);
     } finally {
       setLoading(false);
     }
   }
-
 
   useEffect(() => {
     if (id) {
@@ -35,20 +43,7 @@ export default function SeminarDetails() {
   }
 
   if (error) {
-    return (
-      <div className="container py-5">
-        <div className="row">
-          <div className="col-12 d-flex justify-content-center">
-            <div className="card text-white bg-danger my-3">
-              <div className="card-header">Error</div>
-              <div className="card-body">
-                <p className="card-text">{error}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <Error error={error} />;
   }
 
   if (!seminar) {
@@ -58,9 +53,15 @@ export default function SeminarDetails() {
   return (
     <div className="container py-5 text-white">
       <div className="row">
-        <div className="col-md-7 mb-2">
-          <img src={seminar.imagePath} alt={seminar.title} style={{ width: '100%', height: 'auto' }} className="border border-1 border-light" />
-        </div>
+        {seminar.image && (
+          <div className="col-md-7">
+            <img
+              src={`${seminar.image}`}
+              alt={seminar.title}
+              className="img-fluid"
+            />
+          </div>
+        )}
         <div className="col-md-5">
           <h2>{seminar.title}</h2>
           <p>{seminar.description}</p>

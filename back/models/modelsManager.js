@@ -4,22 +4,26 @@ const Schedule = require('./schedule.js');
 
 function issueRelations() {
 
-    // User and Seminars Relations.
+    // User authors seminar.
     User.hasMany(Seminar);
     Seminar.belongsTo(User);
 
-    // Schedule and Seminars relations.
+    // Schedule for each seminar.
     Seminar.hasMany(Schedule);
     Schedule.belongsTo(Seminar);
+
+    // User attends seminar.
+    User.belongsToMany(Seminar, { through: 'UserSeminar' });
+    Seminar.belongsToMany(User, { through: 'UserSeminar' });
 }
 
 
-async function createTablesFromModels() {
+async function createTablesFromModels(overwrite) {
 
     // Sync all models.
-    await User.sync({ force: true });
-    await Seminar.sync({ force: true });
-    await Schedule.sync({ force: true });
+    await User.sync({ force: overwrite });
+    await Seminar.sync({ force: overwrite });
+    await Schedule.sync({ force: overwrite });
 }
 
 async function insertFillerData() {
@@ -28,11 +32,13 @@ async function insertFillerData() {
 
     await Seminar.bulkCreate([
         {
-            imagePath: "https://cdn.slidesharecdn.com/ss_thumbnails/machinelearninginhealthcare-221210065110-abdf3bb3-thumbnail.jpg",
+            image: "https://cdn.slidesharecdn.com/ss_thumbnails/machinelearninginhealthcare-221210065110-abdf3bb3-thumbnail.jpg",
             title: "AI in the real world",
             description: " A seminar about artificial intelligence in the real world, and how it can be applied to real life problems. ",
             speakers: "Speaker 1, Speaker 2",
-            date: "2021-10-12",
+            date: "2021.10.12",
+            txtcolor: "black",
+            bgrcolor: "white",
             schedules: [
                 { time: "10:00", name: "Start of the seminar" },
                 { time: "11:00", name: "Break" },
@@ -41,11 +47,13 @@ async function insertFillerData() {
             place: "A1.04"
         },
         {
-            imagePath: "https://cdn.slidesharecdn.com/ss_thumbnails/machinelearninginhealthcare-221210065110-abdf3bb3-thumbnail.jpg",
+            image: "https://cdn.slidesharecdn.com/ss_thumbnails/machinelearninginhealthcare-221210065110-abdf3bb3-thumbnail.jpg",
             title: "ML in Healthcare",
             description: " A seminar about machine learning in the healthcare industry, and how it can be applied to real life problems. ",
             speakers: "Speaker 1, Speaker 2",
-            date: "2021-10-13",
+            date: "2021.10.13",
+            txtcolor: "darkblue",
+            bgrcolor: "lightblue",
             schedules: [
                 { time: "10:00", name: "Start of the seminar" },
                 { time: "11:00", name: "Break" },
@@ -55,11 +63,13 @@ async function insertFillerData() {
 
         },
         {
-            imagePath: "https://cdn.slidesharecdn.com/ss_thumbnails/machinelearninginhealthcare-221210065110-abdf3bb3-thumbnail.jpg",
+            image: "https://cdn.slidesharecdn.com/ss_thumbnails/machinelearninginhealthcare-221210065110-abdf3bb3-thumbnail.jpg",
             title: "AI in the industrial field",
             description: " A seminar about artificial intelligence in the real world, and how it can be applied to real life problems. ",
             speakers: "Speaker 1, Speaker 2",
-            date: "2021-10-14",
+            date: "2021.10.14",
+            txtcolor: "white",
+            bgrcolor: "black",
             schedules: [
                 { time: "10:00", name: "Start of the seminar" },
                 { time: "11:00", name: "Break" },
@@ -68,11 +78,11 @@ async function insertFillerData() {
             place: "B1.03"
         },
         {
-            imagePath: "https://cdn.slidesharecdn.com/ss_thumbnails/machinelearninginhealthcare-221210065110-abdf3bb3-thumbnail.jpg",
+            image: "https://cdn.slidesharecdn.com/ss_thumbnails/machinelearninginhealthcare-221210065110-abdf3bb3-thumbnail.jpg",
             title: "AI in the real world",
             description: " A seminar about artificial intelligence in the real world, and how it can be applied to real life problems. ",
             speakers: "Speaker 1, Speaker 2",
-            date: "2021-10-15",
+            date: "2021.10.15",
             schedules: [
                 { time: "10:00", name: "Start of the seminar" },
                 { time: "11:00", name: "Break" },

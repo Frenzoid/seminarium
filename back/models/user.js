@@ -7,8 +7,6 @@ const bcrypt = require('bcrypt');
 
 const { SALTLVL } = require('../config/general.js');
 
-const Item = require('./seminar.js');
-
 const User = sequelize.define('user', {
     id: {
         type: Sequelize.INTEGER,
