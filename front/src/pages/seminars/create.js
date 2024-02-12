@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { CirclePicker } from 'react-color';
 import FileBase64 from 'react-file-base64';
@@ -79,6 +79,12 @@ function CreateSeminar() {
     }
   };
 
+  useEffect(() => {
+    if (seminar.schedules.length === 0) {
+      addSchedule();
+    }
+  }, []);
+
   return (
     <div className="container">
       {error && <Error error={error} />}
@@ -128,10 +134,13 @@ function CreateSeminar() {
                   value={schedule.name}
                 />
               </div>
-              <div className="col-2">
-                <button type="button" className="btn btn-danger" onClick={() => removeSchedule(index)}>Remove</button>
-              </div>
+              {index !== 0 && (
+                <div className="col-2">
+                  <button type="button" className="btn btn-danger" onClick={() => removeSchedule(index)}>Remove</button>
+                </div>
+              )}
             </div>
+
           ))}
 
           <button type="button" className="btn btn-secondary mb-2" onClick={addSchedule} style={{ marginTop: '15px', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}>Add Schedule</button>
