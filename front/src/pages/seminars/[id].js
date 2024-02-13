@@ -32,9 +32,10 @@ export default function SeminarDetails() {
       setSeminar(data);
     } catch (error) {
       console.error(error);
+      error = error.response ? error.response.data.message : error.message;
       setError({
         title: 'Error fetching seminar details from the server.',
-        message: error.message
+        message: error
       });
     } finally {
       setLoading(false);

@@ -21,7 +21,10 @@ async function getSeminar(req, res) {
     const seminar = await Seminar.findByPk(req.params.id, {
         include: [{ model: Schedule, order: [['time', 'ASC']] }]
     });
+
+    if (!seminar) return res.boom.badRequest("Seminar not found :c");
     if (seminar.image) seminar.image = seminar.image.toString();
+
     return res.json(seminar);
 }
 

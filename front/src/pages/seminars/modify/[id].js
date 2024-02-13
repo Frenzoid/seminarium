@@ -96,9 +96,10 @@ function ModifySeminar() {
       router.push(`/seminars/${id}`);
     } catch (error) {
       console.error(error);
+      error = error.response ? error.response.data.message : error.message;
       setError({
         title: 'Error updating the seminar.',
-        message: error.response?.data?.message || error.message
+        message: error
       });
     } finally {
       setLoading(false);

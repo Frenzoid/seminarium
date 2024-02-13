@@ -73,7 +73,7 @@ function CreateSeminar() {
       router.push(`/seminars/${data.id}`);
     } catch (error) {
       console.error(error);
-      error = error.response.data.message || error.message;
+      error = error.response ? error.response.data.message : error.message;
       setError({
         title: 'Error creating the seminar.',
         message: error
