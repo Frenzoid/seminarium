@@ -27,11 +27,9 @@ services:
     build:
       context: ./front
       dockerfile: Dockerfile
-    ports:
-      - 3000:3000
     environment:
       - PORT=3000
-      - APIURL=http://SEMINARIUM_BACKEND:3001
+      - APIURL=http://api.seminarium.frenzoid.dev
 
 networks:
   npm_default:
