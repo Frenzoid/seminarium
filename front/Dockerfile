@@ -15,9 +15,6 @@ COPY . .
 # Expose the port the app runs on
 EXPOSE 3000
 
-# Define environment variables
-ENV APIURL http://localhost:3001
-
 # Build the app
 RUN npm run build
 
