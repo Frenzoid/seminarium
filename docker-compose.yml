@@ -6,7 +6,7 @@ services:
       context: ./back
       dockerfile: Dockerfile
     environment:
-      - PORT=3001
+      - PORT=3000
       - BPMBLIMIT=10mb
       - LOGGERLVL=dev
       - JWTSECRET=mysecretphrase
@@ -30,6 +30,8 @@ services:
     environment:
       - PORT=3000
       - APIURL=http://api.seminarium.frenzoid.dev
+    networks:
+      - npm_default
 
 networks:
   npm_default:
