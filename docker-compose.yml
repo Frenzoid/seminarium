@@ -1,19 +1,34 @@
 version: '3.8'
 services:
   express:
+    container_name: SEMINARIUM_BACKEND
     build:
       context: ./back
       dockerfile: Dockerfile
     ports:
-      - 3001:3001
-    volumes:
-      - ./express:/app
+      - 3001:3000
+    environment:
+      - PORT=3001
+      - BPMBLIMIT=10mb
+      - LOGGERLVL=dev
+      - JWTSECRET=mysecretphrase
+      - JWTEXPIRE=1h
+      - DBDIAL=postgres
+      - DBNAME=seminarium
+      - DBUSER=lolcat
+      - DBPASS=lolcat
+      - DBHOST=POSTGRES_DATABASE
+      - DBLOGC=false
+      - DBRESET=false
+      - SALTLVL=10
 
   nextjs:
+    container_name: SEMINARIUM_FRONTEND
     build:
       context: ./front
       dockerfile: Dockerfile
     ports:
-      - 3003:3000
-    volumes:
-      - ./nextjs:/app
+      - 3000:3000
+    environment:
+      - PORT=3000
+      - APIURL=http://SEMINARIUM_BACKEND:3001
