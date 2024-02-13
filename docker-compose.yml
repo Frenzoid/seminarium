@@ -29,7 +29,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - PORT=3000
-      - APIURL=https://semiunarium.frenzoid.dev
+      - APIURL=https://semiunarium.frenzoid.dev/api
     networks:
       - npm_default
 
