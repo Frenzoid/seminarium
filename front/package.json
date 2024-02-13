@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "serve": "serve -s out"
   },
   "dependencies": {
     "axios": "^1.6.7",
@@ -18,7 +19,8 @@
     "react-color": "^2.19.3",
     "react-dom": "^18",
     "react-file-base64": "^1.0.3",
-    "sequelize": "^6.36.0"
+    "sequelize": "^6.36.0",
+    "serve": "^14.2.1"
   },
   "devDependencies": {
     "eslint": "^8",

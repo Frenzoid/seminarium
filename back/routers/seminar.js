@@ -12,8 +12,8 @@ const { getSeminars, getSeminar, addSeminar, editSeminar, deleteSeminar } = requ
 router.get('/', errorHandler(getSeminars));
 router.get('/:id', errorHandler(getSeminar));
 router.post('/', errorHandler(addSeminar));
-router.put('/', errorHandler(editSeminar));
-router.delete('/', errorHandler(deleteSeminar));
+router.put('/:id', errorHandler(editSeminar));
+router.delete('/:id', errorHandler(deleteSeminar));
 
 
 module.exports = router

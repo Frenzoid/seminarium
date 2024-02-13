@@ -9,8 +9,8 @@ function issueRelations() {
     Seminar.belongsTo(User);
 
     // Schedule for each seminar.
-    Seminar.hasMany(Schedule);
-    Schedule.belongsTo(Seminar);
+    Seminar.hasMany(Schedule, { foreignKey: 'seminarId', onDelete: 'CASCADE' });
+    Schedule.belongsTo(Seminar, { foreignKey: 'seminarId', onDelete: 'CASCADE' });
 
     // User attends seminar.
     User.belongsToMany(Seminar, { through: 'UserSeminar' });
@@ -36,7 +36,7 @@ async function insertFillerData() {
             title: "AI in the real world",
             description: " A seminar about artificial intelligence in the real world, and how it can be applied to real life problems. ",
             speakers: "Speaker 1, Speaker 2",
-            date: "2021.10.12",
+            date: "2021-10-12",
             txtcolor: "black",
             bgrcolor: "white",
             schedules: [
@@ -51,7 +51,7 @@ async function insertFillerData() {
             title: "ML in Healthcare",
             description: " A seminar about machine learning in the healthcare industry, and how it can be applied to real life problems. ",
             speakers: "Speaker 1, Speaker 2",
-            date: "2021.10.13",
+            date: "2021-10-13",
             txtcolor: "darkblue",
             bgrcolor: "lightblue",
             schedules: [
@@ -67,7 +67,7 @@ async function insertFillerData() {
             title: "AI in the industrial field",
             description: " A seminar about artificial intelligence in the real world, and how it can be applied to real life problems. ",
             speakers: "Speaker 1, Speaker 2",
-            date: "2021.10.14",
+            date: "2021-10-14",
             txtcolor: "white",
             bgrcolor: "black",
             schedules: [
@@ -82,7 +82,7 @@ async function insertFillerData() {
             title: "AI in the real world",
             description: " A seminar about artificial intelligence in the real world, and how it can be applied to real life problems. ",
             speakers: "Speaker 1, Speaker 2",
-            date: "2021.10.15",
+            date: "2021-10-15",
             schedules: [
                 { time: "10:00", name: "Start of the seminar" },
                 { time: "11:00", name: "Break" },

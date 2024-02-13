@@ -23,10 +23,35 @@ export default function SeminarDetails() {
     setLoading(true);
     try {
       const { data } = await axios.get(`${APIURL}/seminars/${id}`);
+
+      // Format date
+      const seminarDate = new Date(data.date);
+      const formattedDate = seminarDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      data.date = formattedDate;
+
       setSeminar(data);
     } catch (error) {
       console.error(error);
-      setError(`Error fetching seminar details: ${error.message}`);
+      setError({
+        title: 'Error fetching seminar details from the server.',
+        message: error.message
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function removeSeminar() {
+    setLoading(true);
+    try {
+      await axios.delete(`${APIURL}/seminars/${id}`);
+      router.push('/');
+    } catch (error) {
+      console.error(error);
+      setError({
+        title: 'Error removing seminar.',
+        message: error.message
+      });
     } finally {
       setLoading(false);
     }
@@ -52,17 +77,18 @@ export default function SeminarDetails() {
 
   return (
     <div className="container py-5 text-white">
-      <div className="row">
+      <div className={`row ${!seminar.image ? 'justify-content-center' : ''}`}>
         {seminar.image && (
           <div className="col-md-7">
             <img
               src={`${seminar.image}`}
               alt={seminar.title}
               className="img-fluid"
+              style={{ width: '100%', height: 'auto' }}
             />
           </div>
         )}
-        <div className="col-md-5">
+        <div className={`${seminar.image ? 'col-md-5' : 'col-md-8'}`}>
           <h2>{seminar.title}</h2>
           <p>{seminar.description}</p>
 
@@ -74,16 +100,18 @@ export default function SeminarDetails() {
             <li><strong>Place:</strong> {seminar.place}</li>
           </ul>
 
-
           <hr />
           <h3>Schedule:</h3>
           <ul className="list-unstyled">
-
             {seminar.schedules.map((schedule, index) => (
               <li key={index}><strong>{schedule.time}</strong> {schedule.name}</li>
             ))}
           </ul>
         </div>
+      </div>
+      <div className="d-flex justify-content-end mt-3">
+        <button onClick={() => router.push(`/seminars/modify/${id}`)} className="btn btn-primary me-2">Modify</button>
+        <button onClick={() => removeSeminar()} className="btn btn-danger">Remove</button>
       </div>
     </div>
   );

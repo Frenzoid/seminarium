@@ -6,13 +6,13 @@ import FileBase64 from 'react-file-base64';
 
 import axios from 'axios';
 
-import Loading from '../../components/Loading';
-import Error from '../../components/Error';
+import Loading from '@/components/Loading';
+import Error from '@/components/Error';
 import SeminarCard from '@/components/SeminarCard';
 
-import getConfig from 'next/config'
+import getConfig from 'next/config';
 
-function CreateSeminar() {
+function ModifySeminar() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [seminar, setSeminar] = useState({
@@ -28,9 +28,14 @@ function CreateSeminar() {
   });
 
   const router = useRouter();
+  const { id } = router.query;
 
-  const { publicRuntimeConfig } = getConfig()
-  const { APIURL } = publicRuntimeConfig
+  const { publicRuntimeConfig } = getConfig();
+  const { APIURL } = publicRuntimeConfig;
+
+  useEffect(() => {
+    fetchSeminar();
+  }, [id, APIURL]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -51,7 +56,6 @@ function CreateSeminar() {
       schedules: [...seminar.schedules, { time: '', name: '' }]
     });
   };
-
   const removeSchedule = (index) => {
     const newSchedules = seminar.schedules.filter((_, i) => i !== index);
     setSeminar({ ...seminar, schedules: newSchedules });
@@ -65,30 +69,46 @@ function CreateSeminar() {
     setSeminar({ ...seminar, schedules: newSchedules });
   };
 
+  const fetchSeminar = async () => {
+    if (id) {
+      setLoading(true);
+      try {
+        const { data } = await axios.get(`${APIURL}/seminars/${id}`);
+        setSeminar(data);
+      } catch (error) {
+        console.error(error);
+        setError({
+          title: 'Error fetching seminar details from the server.',
+          message: error.message
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
     try {
-      const { data } = await axios.post(`${APIURL}/seminars/`, seminar);
-      router.push(`/seminars/${data.id}`);
+      await axios.put(`${APIURL}/seminars/${id}`, seminar);
+      router.push(`/seminars/${id}`);
     } catch (error) {
-      console.error('There was an error creating the seminar:', error);
-      setError('Failed to create seminar. ' + error.message);
+      console.error(error);
+      setError({
+        title: 'Error updating the seminar.',
+        message: error.response?.data?.message || error.message
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (seminar.schedules.length === 0) {
-      addSchedule();
-    }
-  }, []);
-
   return (
     <div className="container">
       {error && <Error error={error} />}
-      <h2 className="mb-4 pt-4 text-white">Create Seminar</h2>
+      <h2 className="mb-4 pt-4 text-white">Modify Seminar</h2>
       <form onSubmit={handleSubmit} className="row">
         <div className="col-md-6">
           <input type="text" name="title" placeholder="Title" className="form-control mb-2" onChange={handleInputChange} value={seminar.title} />
@@ -140,16 +160,24 @@ function CreateSeminar() {
                 </div>
               )}
             </div>
-
           ))}
-
           <button type="button" className="btn btn-secondary mb-2" onClick={addSchedule} style={{ marginTop: '15px', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}>Add Schedule</button>
         </div>
         <div className="col-12 my-3">
-          <button type="submit" disabled={loading} className="btn btn-primary mt-2" style={{ marginTop: '15px', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}>Create Seminar</button>
-          {loading && <Loading />}
+          {loading ? (
+            <Loading />
+          ) : (
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary mt-2"
+              style={{ marginTop: '15px', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
+            >
+              Update Seminar
+            </button>
+          )}
         </div>
-      </form >
+      </form>
       <div className="text-white">
         <hr />
       </div>
@@ -159,8 +187,8 @@ function CreateSeminar() {
           <SeminarCard key={seminar.schedules.length} seminar={seminar} goToSeminarDetails={() => { }} />
         </div>
       </div>
-    </div >
+    </div>
   );
 }
 
-export default CreateSeminar;
+export default ModifySeminar;

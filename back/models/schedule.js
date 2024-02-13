@@ -13,7 +13,7 @@ const Schedule = sequelize.define('schedule', {
     validate: {
       isTimeFormat(value) {
         if (!/^([01]\d|2[0-3]):([0-5]\d)$/.test(value)) {
-          throw new Error('Invalid time format. Time must be in HH:mm format.');
+          throw new Error('Invalid time format for one of the Schedules. Time field must have HH:mm format.');
         }
       },
     },
@@ -21,6 +21,11 @@ const Schedule = sequelize.define('schedule', {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'One of the name fields of the schedule is empty.',
+      },
+    },
   },
 });
 

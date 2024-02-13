@@ -25,6 +25,7 @@ body {
   background: rgba(36, 36, 36, 0.534);
 }
 
+
 @keyframes fadeIn {
   from {
     opacity: 0;

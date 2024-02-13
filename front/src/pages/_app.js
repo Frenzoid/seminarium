@@ -1,8 +1,7 @@
-import "@/styles/globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import React from "react";
-import Image from "next/image";
-import { useRouter } from 'next/router'; // Import useRouter
+import "@/styles/globals.css";
+
+import { useRouter } from 'next/router';
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
@@ -12,18 +11,27 @@ export default function App({ Component, pageProps }) {
   };
 
   const goToCreateSeminar = () => {
-    router.push('/seminars/create'); // Function to navigate to the create seminar page
+    router.push('/seminars/create');
   };
 
   return (
     <div>
-      <nav className="navbar navbar-dark bg-dark">
-        <div className="container d-flex justify-content-between"> {/* Ensuring the elements are spaced between */}
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div className="container">
           <a className="navbar-brand c-pointer" onClick={goHome}>Seminarium</a>
-          {router.pathname === '/seminars/create' ? null : (
-            <button className="btn btn-primary" onClick={goToCreateSeminar}>Create Seminar</button>
-          )}
-          <a className="navbar-brand c-pointer" href="https://adminer.frenzoid.dev">db access</a>
+
+          <div className="navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav ml-auto">
+              {router.pathname !== '/seminars/create' && (
+                <li className="nav-item c-pointer">
+                  <a className="nav-link" onClick={goToCreateSeminar}>Create Seminar</a>
+                </li>
+              )}
+              <li className="nav-item c-pointer">
+                <a className="nav-link" href="https://adminer.frenzoid.dev">Access Database</a>
+              </li>
+            </ul>
+          </div>
         </div>
       </nav>
       <div className="container main">

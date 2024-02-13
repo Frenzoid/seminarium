@@ -1,6 +1,6 @@
 const Schedule = require("../models/schedule");
 const Seminar = require("../models/seminar");
-const User = require("../models/user");
+const sequelize = require('../config/database');
 
 /**
  * Item controller, here you'll be managing all bussiness logic.
@@ -9,6 +9,7 @@ async function getSeminars(req, res) {
     const seminars = await Seminar.findAll({
         include: [{ model: Schedule, order: [['time', 'ASC']], limit: 1 }]
     });
+
     seminars.map((seminar) => {
         if (seminar.image) seminar.image = seminar.image.toString();
         return seminar;
@@ -27,34 +28,63 @@ async function getSeminar(req, res) {
 async function addSeminar(req, res) {
     const seminar = req.body;
     console.log(seminar);
-    const newSeminar = await Seminar.create(seminar, { include: [Schedule] });
-    return res.json(newSeminar);
+
+    if (!seminar.schedules || seminar.schedules.length === 0)
+        return res.boom.badRequest("The seminar must have at least one schedule! (Starting time).");
+
+    let transaction;
+
+    try {
+        transaction = await sequelize.transaction();
+
+        const newSeminar = await Seminar.create(seminar, {
+            include: [Schedule],
+            transaction: transaction
+        });
+
+        await transaction.commit();
+        return res.json(newSeminar);
+    } catch (error) {
+        if (transaction) await transaction.rollback();
+        throw error;
+    }
 }
 
 async function editSeminar(req, res) {
-    const { id } = req.body;
+    const { id } = req.params;
     const seminar = req.body;
 
-    // Update Seminar
-    await Seminar.update(seminar, { where: { id } });
+    if (!seminar.schedules || seminar.schedules.length === 0)
+        return res.boom.badRequest("The seminar must have at least one schedule! (Starting time).");
 
-    // Update Schedules
-    if (seminar.schedules && seminar.schedules.length) {
-        for (const schedule of seminarData.schedules) {
-            await Schedule.update(schedule, { where: { id: schedule.id, seminarId: id } });
-        }
+    const transaction = await sequelize.transaction();
+
+    try {
+        // Update seminar
+        const updatedSeminar = await Seminar.update(seminar, {
+            where: { id },
+            transaction,
+        });
+
+        // Update schedules
+        await Schedule.destroy({ where: { seminarId: id }, transaction });
+        await Schedule.bulkCreate(seminar.schedules.map((schedule) => ({
+            ...schedule,
+            seminarId: id
+        })), { transaction });
+
+        await transaction.commit();
+        res.json(updatedSeminar);
+
+    } catch (error) {
+        await transaction.rollback();
+        throw error;
     }
-
-    const editedSeminar = await Seminar.findByPk(id, {
-        include: [{ model: Schedule, order: [['time', 'ASC']] }]
-    });
-
-    return res.json(editedSeminar);
 }
 
 async function deleteSeminar(req, res) {
-    const { id } = req.body;
-    await Seminar.destroy({ where: { id } });
+    const { id } = req.params;
+    await Seminar.destroy({ where: { id }, include: [Schedule] });
     return res.json({ message: "Seminar deleted" });
 }
 

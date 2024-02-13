@@ -12,9 +12,8 @@ const boom = require('express-boom');
 const logger = require('morgan');
 const cors = require('cors');
 
-
 // We grab the configuration items we need.
-const { PORT, BPMBLIMIT, LOGGERLVL, DBHOST, DBNAME, DBUSER, DBDIAL } = require('./config/general.js');
+const { PORT, BPMBLIMIT, LOGGERLVL, DBHOST, DBNAME, DBUSER, DBDIAL, DBRESET } = require('./config/general.js');
 
 // We grab our database connector and tables generator.
 const sequelize = require("./config/database.js");
@@ -22,6 +21,7 @@ const { createTablesFromModels, issueRelations, insertFillerData } = require("./
 
 // We grab our helpers
 const { jwtMiddleware } = require('./helpers/session')
+const { checkBodySizeLimitMiddleware } = require('./helpers/functions.js');
 
 // We grab our routers.
 const Routers = require('./routers/masterRouter.js');
@@ -29,34 +29,23 @@ const Routers = require('./routers/masterRouter.js');
 // express app.
 const app = express();
 
+// Enable cors
+app.use(cors())
 
 // Error standarization.
 app.use(boom());
 
 // Body parser configuration
+app.use(checkBodySizeLimitMiddleware);
 app.use(express.json({ limit: BPMBLIMIT }));
 app.use(express.urlencoded({ extended: true }));
 
 // Logger to console.
 app.use(logger(LOGGERLVL));
 
-// Enable cors
-app.use(cors())
 
 
-// A default testing endpoint (you can remove this, used to check if the apirest works).
-app.get('/api', (_, res) => {
-    return res.send('API works.');
-});
-
-// A default testing endpoint (you can remove this, used to check if the apirest works).
-app.get('/api/error', (_, res) => {
-    let cat = "https://http.cat/502";
-    res.boom.badGateway(null, { cat });
-});
-
-
-// Our route routers.
+// Our routers.
 // jwtMiddleware is a middleware that we manually made to check for jwt tokens and auto refesh them.
 app.use('/api/auth', Routers.auth);
 app.use('/api/users', jwtMiddleware, Routers.user);
@@ -77,9 +66,9 @@ try {
         issueRelations();
 
         // issue transaction, creating tables from models.
-        await createTablesFromModels(false);
+        await createTablesFromModels(DBRESET);
 
-        //  Insert filler data.
+        // Insert filler data.
         // await insertFillerData();
 
         // Start express server.

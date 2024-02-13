@@ -38,6 +38,8 @@ const DBHOST = process.env.DBHOST;
 // Enable database logging to node console.
 const DBLOGC = (process.env.DBLOGC == 'true' ? true : false);
 
+// Reset database on server start.
+const DBRESET = (process.env.DBRESET == 'true' ? true : false);
 
 // Salt Level for user password encryption
 const SALTLVL = Number(process.env.SALTLVL) ?? 10;
@@ -55,10 +57,9 @@ const config = {
     DBPASS,
     DBHOST,
     DBLOGC,
+    DBRESET,
     SALTLVL
 }
 
 // Log general config. Remove on prod.
-// console.log(config)
-
 module.exports = config;
