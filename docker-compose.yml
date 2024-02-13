@@ -21,6 +21,8 @@ services:
       - DBLOGC=false
       - DBRESET=false
       - SALTLVL=10
+    networks:
+      - npm_default
 
   nextjs:
     container_name: SEMINARIUM_FRONTEND
@@ -32,3 +34,7 @@ services:
     environment:
       - PORT=3000
       - APIURL=http://SEMINARIUM_BACKEND:3001
+
+networks:
+  npm_default:
+    external: true
