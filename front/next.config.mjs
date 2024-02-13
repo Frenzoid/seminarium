@@ -3,7 +3,7 @@ const nextConfig = {
   // output: 'export',
   reactStrictMode: true,
   publicRuntimeConfig: {
-    APIURL: process.env.APIURL ?? 'https://semiunarium.frenzoid.dev/api',
+    APIURL: process.env.APIURL ?? 'https://api.semiunarium.frenzoid.dev/api',
   },
 };
 
