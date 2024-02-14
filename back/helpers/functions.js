@@ -8,7 +8,13 @@ function errorHandler(fn) {
     }
     catch (err) {
       console.error(err);
-      return res.boom.badRequest(err);
+
+      if (err.name === 'SequelizeValidationError'
+        || err.name === 'SequelizeUniqueConstraintError'
+        || err.name === 'AggregateError')
+        return res.boom.badRequest(err.errors.map(e => e.message).join('\n'));
+
+      return res.boom.badRequest(err.message || err.toString());
     }
   }
 }

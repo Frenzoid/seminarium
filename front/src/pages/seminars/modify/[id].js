@@ -1,16 +1,16 @@
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+
+import getConfig from 'next/config';
 
 import { CirclePicker } from 'react-color';
 import FileBase64 from 'react-file-base64';
-
 import axios from 'axios';
 
 import Loading from '@/components/Loading';
 import Error from '@/components/Error';
 import SeminarCard from '@/components/SeminarCard';
 
-import getConfig from 'next/config';
 
 function ModifySeminar() {
   const [loading, setLoading] = useState(false);

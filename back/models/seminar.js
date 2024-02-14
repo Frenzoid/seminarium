@@ -54,7 +54,7 @@ const Seminar = sequelize.define('seminar', {
             isDate: { msg: "Please provide a valid date in the format DD/MM/YYYY." },
             validateDateIsFuture(value) {
                 if (value < new Date().toISOString().split('T')[0]) {
-                    throw new Error("The date must be in the future.");
+                    throw new Error("The date must be greater or equal to today's date.");
                 }
             }
         }

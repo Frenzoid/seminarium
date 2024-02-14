@@ -1,12 +1,13 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 
+import getConfig from 'next/config'
+
 import axios from 'axios';
 
 import Loading from '../../components/Loading';
 import Error from '../../components/Error';
 
-import getConfig from 'next/config'
 
 export default function SeminarDetails() {
   const [seminar, setSeminar] = useState(null);

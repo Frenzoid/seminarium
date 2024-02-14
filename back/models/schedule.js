@@ -10,6 +10,7 @@ const Schedule = sequelize.define('schedule', {
   time: {
     type: DataTypes.STRING,
     allowNull: false,
+    allowEmpty: false,
     validate: {
       isTimeFormat(value) {
         if (!/^([01]\d|2[0-3]):([0-5]\d)$/.test(value)) {
@@ -21,9 +22,10 @@ const Schedule = sequelize.define('schedule', {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
+    allowEmpty: false,
     validate: {
       notEmpty: {
-        msg: 'One of the name fields of the schedule is empty.',
+        msg: "Empty name field for one of the Schedules. Name field can't be empty.",
       },
     },
   },

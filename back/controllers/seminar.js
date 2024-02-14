@@ -1,16 +1,20 @@
 const Schedule = require("../models/schedule");
 const Seminar = require("../models/seminar");
 const sequelize = require('../config/database');
+const { Op } = require('sequelize');
 
 /**
  * Item controller, here you'll be managing all bussiness logic.
  */
 async function getSeminars(req, res) {
     const seminars = await Seminar.findAll({
-        order: [['date', 'ASC']],
+        where: { date: { [Op.gte]: new Date() } },
+        order: [
+            ['date', 'ASC'],
+        ],
         include: [{
             model: Schedule,
-            order: [['time', 'ASC']],
+            order: [['time', 'ASC'],],
             limit: 1
         }]
     });
@@ -77,10 +81,14 @@ async function editSeminar(req, res) {
 
         // Update schedules
         await Schedule.destroy({ where: { seminarId: id }, transaction });
-        await Schedule.bulkCreate(seminar.schedules.map((schedule) => ({
-            ...schedule,
+        seminar.schedules.map(({ name, time }) => ({
+            name, time,
             seminarId: id
-        })), { transaction });
+        }));
+
+        console.log(seminar.schedules)
+
+        await Schedule.bulkCreate(seminar.schedules, { transaction, validate: true });
 
         await transaction.commit();
         res.json(updatedSeminar);

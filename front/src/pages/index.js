@@ -1,18 +1,19 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 
+import getConfig from 'next/config'
+
 import axios from 'axios';
 
 import Loading from '../components/Loading';
 import Error from '../components/Error';
 import SeminarCard from '../components/SeminarCard';
 
-import getConfig from 'next/config'
+
 
 
 export default function Home() {
   const [seminars, setSeminars] = useState(null);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
   const router = useRouter();
@@ -27,11 +28,7 @@ export default function Home() {
       setSeminars(data);
     } catch (error) {
       console.error(error);
-      error = error.response ? error.response.data.message : error.message;
-      setError({
-        title: 'Error fetching seminars from the server.',
-        message: error
-      });
+      router.push('/oops');
     } finally {
       setLoading(false);
     }
@@ -45,21 +42,21 @@ export default function Home() {
     router.push(`/seminars/${id}`);
   };
 
+  const goToMaitenance = () => {
+    router.push(`/oops`);
+  }
+
   if (loading) {
     return <Loading />; // Render the loading component if the data is still being fetched
   }
 
-  if (error) {
-    return (
-      <Error error={error} />
-    );
-  }
 
   return (
-    <div className="container py-5">
+    <div className="container">
       <div className="row justify-content-center">
+        <h2 className="text-white mb-4 pt-4">Upcoming Seminars</h2>
 
-        {seminars.map((seminar) => (
+        {seminars && seminars.map((seminar) => (
           <SeminarCard key={seminar.id} seminar={seminar} goToSeminarDetails={goToSeminarDetails} />
         ))}
 
