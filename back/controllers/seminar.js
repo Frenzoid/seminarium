@@ -7,11 +7,7 @@ const sequelize = require('../config/database');
  */
 async function getSeminars(req, res) {
     const seminars = await Seminar.findAll({
-        include: [{
-            model: Schedule,
-            order: [[{ model: Schedule }, 'time', 'ASC']],
-            limit: 1
-        }]
+        include: [{ model: Schedule, order: [['time', 'ASC']], limit: 1 }]
     });
 
     seminars.map((seminar) => {
