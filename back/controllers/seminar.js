@@ -6,15 +6,27 @@ const sequelize = require('../config/database');
  * Item controller, here you'll be managing all bussiness logic.
  */
 async function getSeminars(req, res) {
-    const seminars = await Seminar.findAll({
-        order: [['date', 'ASC']],
-        include: [{ model: Schedule, order: [['time', 'ASC']], limit: 1 }]
+
+    let seminars = await Seminar.findAll({
+        order: [['date', 'ASC']]
     });
 
-    seminars.map((seminar) => {
+    for (let i = 0; i < seminars.length; i++) {
+        let schedules = await seminars[i].getSchedules({
+            order: [['time', 'ASC']],
+            limit: 1
+        });
+
+        if (schedules && schedules.length > 0) {
+            seminars[i].dataValues.firstSchedule = schedules[0];
+        }
+    }
+
+    seminars = seminars.map(seminar => {
         if (seminar.image) seminar.image = seminar.image.toString();
         return seminar;
     });
+
     return res.json(seminars);
 }
 
