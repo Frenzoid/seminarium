@@ -7,7 +7,11 @@ const sequelize = require('../config/database');
  */
 async function getSeminars(req, res) {
     const seminars = await Seminar.findAll({
-        include: [{ model: Schedule, order: [['time', 'ASC']], limit: 1 }]
+        include: [{
+            model: Schedule,
+            order: [[{ model: Schedule }, 'time', 'ASC']],
+            limit: 1
+        }]
     });
 
     seminars.map((seminar) => {
@@ -19,7 +23,8 @@ async function getSeminars(req, res) {
 
 async function getSeminar(req, res) {
     const seminar = await Seminar.findByPk(req.params.id, {
-        include: [{ model: Schedule, order: [['time', 'ASC']] }]
+        include: [{ model: Schedule }],
+        order: [[{ model: Schedule }, 'time', 'ASC']]
     });
 
     if (!seminar) return res.boom.badRequest("Seminar not found :c");
