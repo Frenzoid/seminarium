@@ -79,14 +79,16 @@ async function editSeminar(req, res) {
             transaction,
         });
 
-        // Update schedules
+        // Update schedules: remove old schedules, add new ones with asociation to the seminar, and bulk create
         await Schedule.destroy({ where: { seminarId: id }, transaction });
-        seminar.schedules.map(({ name, time }) => ({
-            name, time,
+
+        seminar.schedules = seminar.schedules.map(({ name, time }) => ({
+            name,
+            time,
             seminarId: id
         }));
 
-        console.log(seminar.schedules)
+        console.log(seminar);
 
         await Schedule.bulkCreate(seminar.schedules, { transaction, validate: true });
 
